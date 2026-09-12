@@ -24,25 +24,43 @@ DATA_SPLIT_DIR = PROJECT_ROOT / 'data' / 'split'
 MODEL_DIR = PROJECT_ROOT / 'model'
 REPORT_DIR = PROJECT_ROOT / 'report'
 
-# Resolve the original dataset path only if the existing split is not available.
-possible_paths = [
-    r'C:\Users\amitr\Downloads\archive (4)\plantvillage dataset\color',
-    r'C:\Users\amitr\Downloads\plantvillage dataset\color',
-]
-dataset_path = next((p for p in possible_paths if os.path.exists(p)), None)
+# CLI arguments to allow custom path if desired: python model/train.py --data path/to/dataset
+parser = argparse.ArgumentParser(description="Train AgriSmart Disease Detection Model")
+parser.add_argument(
+    "--data",
+    type=str,
+    default=None,
+    help="Path to raw PlantVillage dataset folder (optional if data/split already exists)"
+)
+args, _ = parser.parse_known_args()
 
-if not (DATA_SPLIT_DIR / 'train').exists() and not dataset_path:
-    raise FileNotFoundError("Could not find the dataset folder in Downloads. Please verify the path.")
+# Step 1: Check if split dataset already exists; if not, discover raw dataset dynamically
+split_train_path = DATA_SPLIT_DIR / 'train'
 
-if dataset_path:
-    print(f"Using dataset from: {dataset_path}")
+if not split_train_path.exists():
+    home_downloads = Path.home() / "Downloads"
+    possible_paths = [
+        Path(args.data) if args.data else None,
+        Path(os.environ.get("DATASET_PATH")) if os.environ.get("DATASET_PATH") else None,
+        home_downloads / "archive (4)" / "plantvillage dataset" / "color",
+        home_downloads / "plantvillage dataset" / "color",
+        Path("data/raw/color"),
+    ]
+    dataset_path = next((p for p in possible_paths if p and p.exists()), None)
 
-# Step 1: Split into 70/15/15 — do this ONCE before training
-if not (DATA_SPLIT_DIR / 'train').exists():
+    if not dataset_path:
+        raise FileNotFoundError(
+            "Could not find raw dataset folder!\n"
+            "Please specify it via CLI:\n"
+            "  python model/train.py --data path/to/plantvillage/color\n"
+            "Or place it in Downloads or data/raw/color."
+        )
+
+    print(f"Using raw dataset from: {dataset_path}")
     print("Splitting dataset into train/val/test (70/15/15)...")
     splitfolders.ratio(str(dataset_path), output=str(DATA_SPLIT_DIR), seed=42, ratio=(0.70, 0.15, 0.15))
 else:
-    print("data/split already exists. Skipping split step.")
+    print("data/split already exists. Skipping dataset split step.")
 
 # Step 2: Load the split data
 train_datagen = ImageDataGenerator(
