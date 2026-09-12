@@ -6,5 +6,6 @@
         "reportMissingModuleSource": "none",
         "reportAttributeAccessIssue": "none",
         "reportOptionalMemberAccess": "none"
-    }
+    },
+    "git.ignoreLimitWarning": true
 }
