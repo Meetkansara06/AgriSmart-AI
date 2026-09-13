@@ -1,0 +1,37 @@
+{
+    "dataset_shape": [
+        2200,
+        8
+    ],
+    "number_of_classes": 22,
+    "classes": [
+        "apple",
+        "banana",
+        "blackgram",
+        "chickpea",
+        "coconut",
+        "coffee",
+        "cotton",
+        "grapes",
+        "jute",
+        "kidneybeans",
+        "lentil",
+        "maize",
+        "mango",
+        "mothbeans",
+        "mungbean",
+        "muskmelon",
+        "orange",
+        "papaya",
+        "pigeonpeas",
+        "pomegranate",
+        "rice",
+        "watermelon"
+    ],
+    "test_size": 0.2,
+    "test_accuracy": 0.9954545454545455,
+    "macro_f1": 0.9954517027687758,
+    "model": "RandomForestClassifier",
+    "n_estimators": 100,
+    "random_state": 42
+}

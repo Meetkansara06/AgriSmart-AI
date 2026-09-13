@@ -1,0 +1,27 @@
+Accuracy: 0.9610
+Macro-F1: 0.9578
+
+                                                    precision    recall  f1-score   support
+
+                                Apple___Apple_scab     0.9677    0.9474    0.9574        95
+                                 Apple___Black_rot     0.9787    0.9787    0.9787        94
+                                   Apple___healthy     0.9802    0.9960    0.9880       248
+Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot     1.0000    1.0000    1.0000        78
+                       Corn_(maize)___Common_rust_     1.0000    1.0000    1.0000       180
+                            Corn_(maize)___healthy     1.0000    1.0000    1.0000       175
+                                 Grape___Black_rot     1.0000    1.0000    1.0000       177
+                                   Grape___healthy     1.0000    0.9219    0.9593        64
+                     Pepper,_bell___Bacterial_spot     0.9521    0.9205    0.9360       151
+                            Pepper,_bell___healthy     0.9489    1.0000    0.9738       223
+                             Potato___Early_blight     0.9801    0.9867    0.9834       150
+                              Potato___Late_blight     0.9650    0.9200    0.9420       150
+                                  Potato___healthy     0.8519    0.9583    0.9020        24
+                           Tomato___Bacterial_spot     0.9574    0.9844    0.9707       320
+                             Tomato___Early_blight     0.9565    0.7333    0.8302       150
+                              Tomato___Late_blight     0.9024    0.9024    0.9024       287
+                                Tomato___Leaf_Mold     0.8827    0.9931    0.9346       144
+                                  Tomato___healthy     0.9676    0.9958    0.9815       240
+
+                                          accuracy                         0.9610      2950
+                                         macro avg     0.9606    0.9577    0.9578      2950
+                                      weighted avg     0.9616    0.9610    0.9602      2950

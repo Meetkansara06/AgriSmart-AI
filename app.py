@@ -5,6 +5,7 @@ from PIL import Image
 
 # Import model prediction module
 from model.predict import predict_with_confidence
+from model.crop_predict import predict_crop
 
 # Import src modules created by teammates
 from src.precautions import get_precautions
@@ -654,64 +655,34 @@ with tab3:
 # ==============================================================================
 with tab4:
     st.markdown('<div class="section-header">🌾 Smart Crop Recommendation Engine</div>', unsafe_allow_html=True)
-    st.write("Agronomic matching based on soil NPK levels, soil pH, humidity, and soil type.")
+    st.write("Enter soil and weather measurements to receive an offline Random Forest crop recommendation.")
 
-    # Rule-based agronomic crop matching
-    crop_profiles = [
-        {"name": "Rice / Paddy", "n": 90, "p": 40, "k": 40, "ph_range": (5.5, 7.0), "soil": "clay", "icon": "🌾"},
-        {"name": "Corn (Maize)", "n": 80, "p": 45, "k": 40, "ph_range": (5.8, 7.2), "soil": "loamy", "icon": "🌽"},
-        {"name": "Wheat", "n": 50, "p": 25, "k": 25, "ph_range": (6.0, 7.5), "soil": "loamy", "icon": "🌾"},
-        {"name": "Cotton", "n": 120, "p": 45, "k": 45, "ph_range": (6.0, 8.0), "soil": "loamy", "icon": "☁️"},
-        {"name": "Tomato", "n": 100, "p": 50, "k": 50, "ph_range": (6.0, 6.8), "soil": "loamy", "icon": "🍅"},
-        {"name": "Potato", "n": 90, "p": 50, "k": 50, "ph_range": (5.0, 6.5), "soil": "sandy", "icon": "🥔"},
-        {"name": "Bell Pepper", "n": 80, "p": 40, "k": 40, "ph_range": (6.0, 7.0), "soil": "loamy", "icon": "🫑"},
-        {"name": "Apple", "n": 60, "p": 30, "k": 30, "ph_range": (5.5, 6.8), "soil": "loamy", "icon": "🍎"},
-        {"name": "Grape", "n": 40, "p": 30, "k": 30, "ph_range": (5.5, 7.0), "soil": "sandy", "icon": "🍇"},
-    ]
+    with st.form("crop_recommendation_form"):
+        crop_col1, crop_col2 = st.columns(2)
+        with crop_col1:
+            crop_n = st.number_input("Nitrogen (N)", min_value=0.0, value=float(n_val), step=1.0)
+            crop_p = st.number_input("Phosphorus (P)", min_value=0.0, value=float(p_val), step=1.0)
+            crop_k = st.number_input("Potassium (K)", min_value=0.0, value=float(k_val), step=1.0)
+            crop_temperature = st.number_input("Temperature (°C)", value=25.0, step=0.1)
+        with crop_col2:
+            crop_humidity = st.number_input("Humidity (%)", min_value=0.0, max_value=100.0, value=float(humidity), step=0.1)
+            crop_ph = st.number_input("Soil pH", min_value=0.0, max_value=14.0, value=float(soil_ph), step=0.1)
+            crop_rainfall = st.number_input("Rainfall (mm)", min_value=0.0, value=100.0, step=1.0)
 
-    # Calculate match score for each crop profile
-    scores = []
-    for c in crop_profiles:
-        # Distance penalty for NPK
-        npk_diff = abs(c["n"] - n_val) + abs(c["p"] - p_val) + abs(c["k"] - k_val)
-        
-        # pH suitability check
-        ph_ok = c["ph_range"][0] <= soil_ph <= c["ph_range"][1]
-        ph_bonus = 20 if ph_ok else 0
-        
-        # Soil type match
-        soil_bonus = 15 if c["soil"] == soil_type else 0
+        recommend_crop = st.form_submit_button("Recommend Crop")
 
-        match_score = max(0.0, 100.0 - (npk_diff * 0.4) + ph_bonus + soil_bonus)
-        scores.append((match_score, c))
-
-    scores.sort(key=lambda x: x[0], reverse=True)
-    best_match = scores[0]
-
-    col_cr1, col_cr2 = st.columns([1, 1.1])
-
-    with col_cr1:
-        st.markdown(
-            f'<div class="custom-card" style="border-left: 5px solid {precaution_border} !important;">'
-            f'<div style="font-size: 0.85rem; color: {sub_header_color} !important; font-weight: 700; text-transform: uppercase;">'
-            f'⭐ Top Recommended Crop</div>'
-            f'<h2 style="color: {header_color} !important; margin: 0.4rem 0;">{best_match[1]["icon"]} {best_match[1]["name"]}</h2>'
-            f'<div style="font-size: 1.1rem; font-weight: 600; color: {weather_val_color} !important; margin-bottom: 0.8rem;">'
-            f'Agronomic Suitability: {min(99.0, best_match[0]):.1f}%</div>'
-            f'<div style="font-size: 0.9rem; color: {text_secondary} !important;">'
-            f'Matches your field parameters: <b>N={n_val}, P={p_val}, K={k_val}</b>, Soil pH <b>{soil_ph}</b>, and <b>{soil_type.capitalize()}</b> soil.'
-            f'</div></div>',
-            unsafe_allow_html=True
-        )
-
-    with col_cr2:
-        st.markdown(f'<div class="custom-card"><h4 style="margin-top:0; color:{header_color} !important;">Alternative Suitable Crops</h4>', unsafe_allow_html=True)
-        for score_val, crop_data in scores[1:4]:
-            st.markdown(
-                f'<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">'
-                f'<div>{crop_data["icon"]} <b>{crop_data["name"]}</b></div>'
-                f'<div style="color: {weather_val_color} !important; font-weight: 600;">{min(98.0, score_val):.1f}% Match</div>'
-                f'</div>',
-                unsafe_allow_html=True
+    if recommend_crop:
+        try:
+            recommended_crop = predict_crop(
+                N=crop_n,
+                P=crop_p,
+                K=crop_k,
+                temperature=crop_temperature,
+                humidity=crop_humidity,
+                ph=crop_ph,
+                rainfall=crop_rainfall,
             )
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.success(f"Recommended crop: {recommended_crop.title()}")
+            st.caption("This recommendation uses the trained Random Forest model and the seven entered measurements.")
+        except (FileNotFoundError, ValueError, TypeError) as error:
+            st.error(f"Crop recommendation unavailable: {error}")
