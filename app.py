@@ -22,168 +22,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==============================================================================
-# Custom CSS Styling — Modern Glassmorphism & High Readability
-# ==============================================================================
-st.markdown("""
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-        html, body, [class*="css"] {
-            font-family: 'Outfit', sans-serif;
-        }
-
-        /* Hero Header */
-        .hero-container {
-            background: linear-gradient(135deg, #0d3b25 0%, #1e5631 50%, #2e7d32 100%);
-            padding: 2rem 2.2rem;
-            border-radius: 18px;
-            color: #FFFFFF;
-            box-shadow: 0 10px 25px rgba(13, 59, 37, 0.2);
-            margin-bottom: 1.8rem;
-        }
-        
-        .hero-title {
-            font-size: 2.4rem;
-            font-weight: 700;
-            color: #FFFFFF;
-            margin-bottom: 0.3rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.1rem;
-            color: #C8E6C9;
-            font-weight: 400;
-            margin-bottom: 1rem;
-        }
-
-        .hero-badges {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .badge-pill {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #E8F5E9;
-            padding: 0.3rem 0.85rem;
-            border-radius: 20px;
-            font-size: 0.82rem;
-            font-weight: 500;
-        }
-
-        /* Cards & Section Headers */
-        .custom-card {
-            background: #FFFFFF;
-            border-radius: 16px;
-            padding: 1.6rem;
-            border: 1px solid #E2E8F0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            margin-bottom: 1.2rem;
-        }
-
-        .section-header {
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: #1B4D3E;
-            margin-top: 1rem;
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Status Badges */
-        .status-pill-healthy {
-            background-color: #E8F5E9;
-            color: #1B5E20;
-            border: 1.5px solid #A5D6A7;
-            padding: 0.45rem 1.1rem;
-            border-radius: 30px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-pill-diseased {
-            background-color: #FFEBEE;
-            color: #C62828;
-            border: 1.5px solid #EF9A9A;
-            padding: 0.45rem 1.1rem;
-            border-radius: 30px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Weather Metric Boxes */
-        .weather-box {
-            background: #F4F9F4;
-            border-radius: 12px;
-            padding: 1.2rem;
-            border: 1px solid #C8E6C9;
-            text-align: center;
-        }
-
-        .weather-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #2E7D32;
-        }
-
-        .weather-label {
-            font-size: 0.85rem;
-            color: #558B2F;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        /* Sustainability Score Badge Colors */
-        .score-callout {
-            background: linear-gradient(135deg, #1e5631 0%, #2e7d32 100%);
-            color: #FFFFFF;
-            padding: 1.5rem;
-            border-radius: 14px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
-        }
-
-        .precaution-item {
-            background: #F8FAF8;
-            border-left: 4px solid #2E7D32;
-            padding: 0.9rem 1.1rem;
-            border-radius: 0 10px 10px 0;
-            margin-bottom: 0.6rem;
-            font-size: 0.95rem;
-            color: #2D3748;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .precaution-num {
-            background: #2E7D32;
-            color: #FFFFFF;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.78rem;
-            font-weight: 700;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
 
 # ==============================================================================
 # Sidebar: UI Theme & Farm Parameters Configuration
@@ -368,6 +207,18 @@ st.markdown(f"""
             -webkit-text-fill-color: {text_primary} !important;
             border: 1px solid {uploader_border} !important;
             border-radius: 8px !important;
+        }}
+
+        /* Top Header Strip - Transparent Seamless Theme Integration */
+        header[data-testid="stHeader"],
+        [data-testid="stHeader"],
+        header {{
+            background-color: transparent !important;
+            background: transparent !important;
+        }}
+        header[data-testid="stHeader"] *,
+        [data-testid="stHeader"] * {{
+            color: {text_primary} !important;
         }}
 
         /* Alert / st.info Box High-Contrast Styling */
