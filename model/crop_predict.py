@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 import joblib
-import numpy as np
+import pandas as pd
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -71,8 +71,11 @@ def predict_crop(
 
     clf = joblib.load(MODEL_PATH)
 
-    # Build a feature array in the same column order used during training.
-    features = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
+    # Preserve the feature names used when the Random Forest was trained.
+    features = pd.DataFrame(
+        [[N, P, K, temperature, humidity, ph, rainfall]],
+        columns=FEATURE_NAMES,
+    )
     prediction = clf.predict(features)
 
     return prediction[0]

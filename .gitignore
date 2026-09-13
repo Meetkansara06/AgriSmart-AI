@@ -225,6 +225,7 @@ src/crop_recommendation.py
 =======
 # Trained model artefacts
 *.pkl
+!model/crop_rec_model.pkl
 
 # Large CSV datasets (training data — do not commit)
 *.csv

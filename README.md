@@ -89,6 +89,42 @@ On the current PlantVillage development test split:
 
 These metrics do not represent performance on the separate field-condition dataset. That dataset must be evaluated independently.
 
+## Crop Recommendation
+
+The Crop Recommendation module predicts a suitable crop from seven soil and
+weather measurements: `N`, `P`, `K`, `temperature`, `humidity`, `ph`, and
+`rainfall`. It uses the public Kaggle Crop Recommendation dataset from
+`atharvaingle/crop-recommendation-dataset`, stored locally at
+`data/crop_recommendation/Crop_recommendation.csv`.
+
+The model is a `RandomForestClassifier` with `n_estimators=100` and
+`random_state=42`. Training uses an 80/20 stratified train/test split. The
+trained artifact is saved as `model/crop_rec_model.pkl`.
+
+Measured results from the current training run:
+
+- Dataset shape: `(2200, 8)`
+- Crop classes: `22`
+- Test accuracy: `99.55%`
+- Macro-F1: `0.9955`
+
+Train the module with:
+
+```powershell
+.\.venv\Scripts\python.exe model\train_crop.py --data "data\crop_recommendation\Crop_recommendation.csv"
+```
+
+Run a prediction with:
+
+```powershell
+.\.venv\Scripts\python.exe model\crop_predict.py --N 90 --P 42 --K 43 --temperature 25 --humidity 80 --ph 6.5 --rainfall 200
+```
+
+The Streamlit Crop Recommendation tab accepts the same seven inputs and calls
+the saved model independently of the disease image workflow. The result is a
+data-driven recommendation, not a guarantee of field performance; soil tests,
+local agronomy, weather, and farmer expertise remain important.
+
 ## Project Structure
 
 ```text
