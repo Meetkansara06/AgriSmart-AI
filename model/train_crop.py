@@ -1,26 +1,5 @@
 """
 AgriSmart AI — Crop Recommendation Model Training Script
-=========================================================
-
-Module Owner : Yug
-Model        : RandomForestClassifier (scikit-learn)
-Dataset      : Crop Recommendation CSV
-                 Features → N, P, K, temperature, humidity, ph, rainfall
-                 Target   → label  (crop name)
-
-Workflow
---------
-1. Load the Crop Recommendation CSV from the path supplied via ``--data``.
-2. Validate that every required column is present.
-3. Split into 80 % train / 20 % test (stratified, random_state=42).
-4. Train a Random Forest with 100 estimators (random_state=42).
-5. Evaluate on the held-out test set and print accuracy.
-6. Persist the trained model as ``model/crop_rec_model.pkl`` so the
-   prediction script can use it without needing the CSV at runtime.
-
-Usage
------
-    python model/train_crop.py --data "path/to/Crop_recommendation.csv"
 """
 
 import argparse

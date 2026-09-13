@@ -1,24 +1,4 @@
-"""
-AgriSmart AI — Crop Recommendation Prediction Script
-=====================================================
-
-Module Owner : Yug
-Model        : Pre-trained RandomForestClassifier (loaded from ``crop_rec_model.pkl``)
-
-This script does **not** require the original training CSV.
-It only needs the serialised model file produced by ``train_crop.py``.
-
-Usage
------
-    python model/crop_predict.py \
-        --N 90 --P 42 --K 43 \
-        --temperature 20 --humidity 80 \
-        --ph 6.5 --rainfall 200
-
-Output
-------
-    Recommended crop: rice
-"""
+"""Predict the best crop given soil and weather conditions."""
 
 import argparse
 import sys
