@@ -203,6 +203,12 @@ if is_dark:
     input_bg = "#334155"
     input_text = "#FFFFFF"
     input_border = "#475569"
+    uploader_bg = "#1E293B"
+    uploader_border = "#475569"
+    uploader_btn_bg = "#334155"
+    alert_bg = "#064E3B"
+    alert_text = "#ECFDF5"
+    alert_border = "#059669"
     header_color = "#4ADE80"
     sub_header_color = "#86EFAC"
     weather_box_bg = "#1E293B"
@@ -234,6 +240,12 @@ else:
     input_bg = "#FFFFFF"
     input_text = "#1A202C"
     input_border = "#CBD5E1"
+    uploader_bg = "#F8FAFC"
+    uploader_border = "#94A3B8"
+    uploader_btn_bg = "#E2E8F0"
+    alert_bg = "#E8F5E9"
+    alert_text = "#1B5E20"
+    alert_border = "#A5D6A7"
     header_color = "#1B4D3E"
     sub_header_color = "#2E7D32"
     weather_box_bg = "#F4F9F4"
@@ -336,6 +348,39 @@ st.markdown(f"""
         [data-testid="stSidebar"] button[data-testid="stNumberInputStepUp"] svg {{
             fill: {input_text} !important;
             color: {input_text} !important;
+        }}
+
+        /* File Uploader Container & Dropzone High-Contrast Styling */
+        [data-testid="stFileUploaderDropzone"] {{
+            background-color: {uploader_bg} !important;
+            border: 2px dashed {uploader_border} !important;
+            border-radius: 12px !important;
+        }}
+
+        [data-testid="stFileUploaderDropzone"] * {{
+            color: {text_primary} !important;
+            -webkit-text-fill-color: {text_primary} !important;
+        }}
+
+        [data-testid="stFileUploaderDropzone"] button {{
+            background-color: {uploader_btn_bg} !important;
+            color: {text_primary} !important;
+            -webkit-text-fill-color: {text_primary} !important;
+            border: 1px solid {uploader_border} !important;
+            border-radius: 8px !important;
+        }}
+
+        /* Alert / st.info Box High-Contrast Styling */
+        [data-testid="stAlert"], div[class*="stAlert"] {{
+            background-color: {alert_bg} !important;
+            color: {alert_text} !important;
+            border: 1px solid {alert_border} !important;
+            border-radius: 12px !important;
+        }}
+
+        [data-testid="stAlert"] *, div[class*="stAlert"] * {{
+            color: {alert_text} !important;
+            -webkit-text-fill-color: {alert_text} !important;
         }}
 
         /* Hero Header */
