@@ -307,16 +307,77 @@ st.markdown(f"""
             background: transparent !important;
         }}
 
+        div[data-baseweb="select"] *,
         div[data-baseweb="select"] span,
-        div[data-baseweb="select"] div {{
+        div[data-baseweb="select"] div,
+        div[data-baseweb="select"] input,
+        div[data-baseweb="select"] p {{
             color: {input_text} !important;
             -webkit-text-fill-color: {input_text} !important;
             font-weight: 600 !important;
-            border: none !important;
         }}
 
         div[data-baseweb="select"] svg {{
             fill: {input_text} !important;
+            color: {input_text} !important;
+        }}
+
+        /* Dropdown Popover Menus & Expanded Options Lists (Light & Dark Theme) */
+        [data-baseweb="popover"],
+        [data-baseweb="menu"],
+        div[data-baseweb="popover"],
+        div[data-baseweb="menu"],
+        ul[role="listbox"],
+        div[role="listbox"] {{
+            background-color: {card_bg} !important;
+            border: 1.5px solid {card_border} !important;
+            border-radius: 10px !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        }}
+
+        [data-baseweb="popover"] li,
+        [data-baseweb="menu"] li,
+        ul[role="listbox"] li,
+        div[role="option"],
+        li[role="option"],
+        div[data-baseweb="menu-item"] {{
+            background-color: {card_bg} !important;
+            color: {text_primary} !important;
+            -webkit-text-fill-color: {text_primary} !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+        }}
+
+        [data-baseweb="popover"] li *,
+        [data-baseweb="menu"] li *,
+        ul[role="listbox"] li *,
+        div[role="option"] *,
+        li[role="option"] * {{
+            color: {text_primary} !important;
+            -webkit-text-fill-color: {text_primary} !important;
+        }}
+
+        [data-baseweb="popover"] li:hover,
+        [data-baseweb="menu"] li:hover,
+        ul[role="listbox"] li:hover,
+        li[role="option"]:hover,
+        div[role="option"]:hover,
+        li[aria-selected="true"],
+        div[role="option"][aria-selected="true"] {{
+            background-color: {uploader_btn_bg} !important;
+            color: {header_color} !important;
+            -webkit-text-fill-color: {header_color} !important;
+        }}
+
+        [data-baseweb="popover"] li:hover *,
+        [data-baseweb="menu"] li:hover *,
+        ul[role="listbox"] li:hover *,
+        li[role="option"]:hover *,
+        div[role="option"]:hover *,
+        li[aria-selected="true"] *,
+        div[role="option"][aria-selected="true"] * {{
+            color: {header_color} !important;
+            -webkit-text-fill-color: {header_color} !important;
         }}
 
         /* Completely hide Streamlit default red tab-highlight line to prevent double underline */
@@ -342,10 +403,6 @@ st.markdown(f"""
 
         button[data-baseweb="tab"] {{
             background-color: transparent !important;
-            color: {text_secondary} !important;
-            -webkit-text-fill-color: {text_secondary} !important;
-            font-weight: 600 !important;
-            font-size: 0.95rem !important;
             border: none !important;
             border-bottom: 3px solid transparent !important;
             padding: 0.6rem 1rem !important;
@@ -354,19 +411,36 @@ st.markdown(f"""
             transition: all 0.2s ease-in-out !important;
         }}
 
-        button[data-baseweb="tab"]:hover {{
+        button[data-baseweb="tab"] *,
+        button[data-baseweb="tab"] p,
+        button[data-baseweb="tab"] div,
+        button[data-baseweb="tab"] span {{
+            color: {text_secondary} !important;
+            -webkit-text-fill-color: {text_secondary} !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+        }}
+
+        button[data-baseweb="tab"]:hover *,
+        button[data-baseweb="tab"]:hover p,
+        button[data-baseweb="tab"]:hover div,
+        button[data-baseweb="tab"]:hover span {{
             color: {header_color} !important;
             -webkit-text-fill-color: {header_color} !important;
+        }}
+
+        button[data-baseweb="tab"][aria-selected="true"] {{
             border-bottom: 3px solid {header_color} !important;
             background-color: transparent !important;
         }}
 
-        button[data-baseweb="tab"][aria-selected="true"] {{
+        button[data-baseweb="tab"][aria-selected="true"] *,
+        button[data-baseweb="tab"][aria-selected="true"] p,
+        button[data-baseweb="tab"][aria-selected="true"] div,
+        button[data-baseweb="tab"][aria-selected="true"] span {{
             color: {header_color} !important;
             -webkit-text-fill-color: {header_color} !important;
             font-weight: 700 !important;
-            border-bottom: 3px solid {header_color} !important;
-            background-color: transparent !important;
         }}
 
         /* Streamlit General Buttons (e.g. Clear Chat, Recommend Crop) */
