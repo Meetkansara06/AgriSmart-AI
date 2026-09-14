@@ -244,80 +244,101 @@ st.markdown(f"""
             background: transparent !important;
         }}
 
-        /* Single Unified Container for Inputs & Selectboxes with High-Contrast Border */
+        /* High-Contrast Visible 2px Borders for ALL Input Fields across Light & Dark Themes */
         [data-baseweb="input"],
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="select"] div[role="button"],
-        [data-testid="stSidebar"] div[data-baseweb="select"] > div,
-        [data-testid="stSidebar"] div[data-baseweb="select"] div[role="button"],
-        [data-testid="stSidebar"] [data-baseweb="input"] {{
+        div[data-baseweb="select"],
+        [data-baseweb="textarea"],
+        [data-testid="stTextInput"] [data-baseweb="input"],
+        [data-testid="stNumberInput"] [data-baseweb="input"],
+        [data-testid="stTextArea"] [data-baseweb="textarea"],
+        [data-testid="stSelectbox"] div[data-baseweb="select"],
+        [data-testid="stSidebar"] [data-baseweb="input"],
+        [data-testid="stSidebar"] div[data-baseweb="select"] {{
             background-color: {input_bg} !important;
+            background: {input_bg} !important;
             color: {input_text} !important;
             -webkit-text-fill-color: {input_text} !important;
-            border: 1.5px solid {input_border} !important;
+            border: 2px solid {input_border} !important;
             border-radius: 10px !important;
-            overflow: hidden !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
         }}
 
-        /* Inner input field & sub-containers — seamless inside single container */
-        [data-baseweb="input"] *,
+        /* Clean inner text input box inside BaseWeb container */
         [data-baseweb="base-input"],
-        [data-baseweb="base-input"] * {{
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="select"] div[role="combobox"] {{
             border: none !important;
+            border-radius: 0px !important;
             box-shadow: none !important;
+            background: transparent !important;
             background-color: transparent !important;
         }}
 
+        /* Text Input & Text Area Inner Element Padding */
         [data-baseweb="input"] input,
         [data-baseweb="base-input"] input,
-        input,
         textarea {{
             background-color: transparent !important;
             color: {input_text} !important;
             -webkit-text-fill-color: {input_text} !important;
-            border: none !important;
-            box-shadow: none !important;
-            outline: none !important;
             font-weight: 600 !important;
             padding: 0.4rem 0.8rem !important;
         }}
 
-        /* Number Input Step Buttons (+/-) — Integrated cleanly on right side */
-        button[data-testid="stNumberInputStepDown"],
-        button[data-testid="stNumberInputStepUp"] {{
-            background-color: {uploader_btn_bg} !important;
-            color: {input_text} !important;
-            -webkit-text-fill-color: {input_text} !important;
-            border: none !important;
-            border-left: 1px solid {input_border} !important;
-            border-radius: 0px !important;
-            box-shadow: none !important;
+        /* Selectbox Alignment & Text Styling — Perfectly Centered Without Padding Shift */
+        div[data-baseweb="select"],
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="select"] div[role="combobox"],
+        div[data-baseweb="select"] div[role="button"] {{
+            min-height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
         }}
 
-        button[data-testid="stNumberInputStepDown"] svg,
-        button[data-testid="stNumberInputStepUp"] svg {{
-            fill: {input_text} !important;
-            color: {input_text} !important;
+        div[data-baseweb="select"] input {{
+            padding: 0 !important;
+            margin: 0 !important;
+            height: auto !important;
         }}
 
-        /* Main Page & Sidebar Selectboxes & Dropdowns */
-        div[data-baseweb="select"] {{
-            border: none !important;
-            background: transparent !important;
-        }}
-
-        div[data-baseweb="select"] *,
         div[data-baseweb="select"] span,
+        div[data-baseweb="select"] p,
         div[data-baseweb="select"] div,
-        div[data-baseweb="select"] input,
-        div[data-baseweb="select"] p {{
+        [data-testid="stSelectbox"] span,
+        [data-testid="stSelectbox"] p {{
+            background-color: transparent !important;
             color: {input_text} !important;
             -webkit-text-fill-color: {input_text} !important;
             font-weight: 600 !important;
+            line-height: normal !important;
         }}
 
-        div[data-baseweb="select"] svg {{
+        /* Number Input Step Controls (- / +) — High contrast bordered buttons */
+        button[data-testid="stNumberInputStepDown"],
+        button[data-testid="stNumberInputStepUp"] {{
+            background-color: {uploader_btn_bg} !important;
+            background: {uploader_btn_bg} !important;
+            color: {input_text} !important;
+            -webkit-text-fill-color: {input_text} !important;
+            border: 1.5px solid {input_border} !important;
+            border-radius: 8px !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+        }}
+
+        button[data-testid="stNumberInputStepDown"]:hover,
+        button[data-testid="stNumberInputStepUp"]:hover {{
+            background-color: {card_border} !important;
+            background: {card_border} !important;
+        }}
+
+        button[data-testid="stNumberInputStepDown"] svg,
+        button[data-testid="stNumberInputStepUp"] svg,
+        div[data-baseweb="select"] svg,
+        [data-testid="stSelectbox"] svg {{
             fill: {input_text} !important;
             color: {input_text} !important;
         }}
@@ -380,11 +401,12 @@ st.markdown(f"""
             -webkit-text-fill-color: {header_color} !important;
         }}
 
-        /* Completely hide Streamlit default red tab-highlight line to prevent double underline */
-        div[data-baseweb="tab-highlight"],
+        /* Completely hide Streamlit default red tab-highlight line across versions */
         [data-baseweb="tab-highlight"],
+        div[data-baseweb="tab-highlight"],
         [data-testid="stTabHighlight"],
-        div[data-baseweb="tab-list"] > div:last-child {{
+        div[data-baseweb="tab-list"] > div:last-child,
+        [role="tablist"] > div:last-child {{
             display: none !important;
             background-color: transparent !important;
             background: transparent !important;
@@ -394,15 +416,24 @@ st.markdown(f"""
             visibility: hidden !important;
         }}
 
-        /* Navigation Tabs Styling — Single Clean Active & Hover Line */
-        [data-baseweb="tab-list"] {{
+        /* Universal Navigation Tabs Styling — Works across Streamlit DOM variations */
+        [data-baseweb="tab-list"],
+        div[data-baseweb="tab-list"],
+        div[role="tablist"] {{
             background-color: transparent !important;
+            background: transparent !important;
             border-bottom: 2px solid {card_border} !important;
             gap: 4px !important;
         }}
 
-        button[data-baseweb="tab"] {{
+        [data-baseweb="tab"],
+        [role="tab"],
+        button[data-baseweb="tab"],
+        div[data-baseweb="tab"],
+        div[role="tab"],
+        [data-testid="stTab"] {{
             background-color: transparent !important;
+            background: transparent !important;
             border: none !important;
             border-bottom: 3px solid transparent !important;
             padding: 0.6rem 1rem !important;
@@ -411,36 +442,75 @@ st.markdown(f"""
             transition: all 0.2s ease-in-out !important;
         }}
 
+        [data-baseweb="tab"] *,
+        [data-baseweb="tab"] p,
+        [data-baseweb="tab"] div,
+        [data-baseweb="tab"] span,
+        [role="tab"] *,
+        [role="tab"] p,
+        [role="tab"] div,
+        [role="tab"] span,
         button[data-baseweb="tab"] *,
-        button[data-baseweb="tab"] p,
-        button[data-baseweb="tab"] div,
-        button[data-baseweb="tab"] span {{
+        div[role="tab"] *,
+        [data-testid="stTab"] * {{
             color: {text_secondary} !important;
             -webkit-text-fill-color: {text_secondary} !important;
             font-weight: 600 !important;
             font-size: 0.95rem !important;
+            opacity: 1 !important;
         }}
 
+        [data-baseweb="tab"]:hover *,
+        [role="tab"]:hover *,
         button[data-baseweb="tab"]:hover *,
-        button[data-baseweb="tab"]:hover p,
-        button[data-baseweb="tab"]:hover div,
-        button[data-baseweb="tab"]:hover span {{
+        div[role="tab"]:hover *,
+        [data-testid="stTab"]:hover * {{
             color: {header_color} !important;
             -webkit-text-fill-color: {header_color} !important;
         }}
 
-        button[data-baseweb="tab"][aria-selected="true"] {{
+        [aria-selected="true"][role="tab"],
+        [aria-selected="true"][data-baseweb="tab"],
+        button[data-baseweb="tab"][aria-selected="true"],
+        div[role="tab"][aria-selected="true"],
+        [data-testid="stTab"][aria-selected="true"] {{
             border-bottom: 3px solid {header_color} !important;
             background-color: transparent !important;
+            background: transparent !important;
         }}
 
+        [aria-selected="true"][role="tab"] *,
+        [aria-selected="true"][data-baseweb="tab"] *,
         button[data-baseweb="tab"][aria-selected="true"] *,
-        button[data-baseweb="tab"][aria-selected="true"] p,
-        button[data-baseweb="tab"][aria-selected="true"] div,
-        button[data-baseweb="tab"][aria-selected="true"] span {{
+        div[role="tab"][aria-selected="true"] *,
+        [data-testid="stTab"][aria-selected="true"] * {{
             color: {header_color} !important;
             -webkit-text-fill-color: {header_color} !important;
             font-weight: 700 !important;
+            opacity: 1 !important;
+        }}
+
+        /* Tab Scroll Arrows, Overflow Controls & Edge Dividers */
+        div[data-baseweb="tab-border"],
+        div[data-baseweb="tab-scroll-right"],
+        div[data-baseweb="tab-scroll-left"],
+        button[data-baseweb="tab-scroll-button"],
+        [data-baseweb="tab-list"] button,
+        div[data-baseweb="tab-list"] button[aria-label],
+        div[role="tablist"] button {{
+            background-color: transparent !important;
+            background: transparent !important;
+            color: {text_primary} !important;
+            border: none !important;
+            box-shadow: none !important;
+        }}
+
+        div[data-baseweb="tab-border"] *,
+        [data-baseweb="tab-list"] button svg,
+        div[data-baseweb="tab-list"] button[aria-label] svg,
+        div[role="tablist"] button svg {{
+            fill: {text_primary} !important;
+            color: {text_primary} !important;
         }}
 
         /* Streamlit General Buttons (e.g. Clear Chat, Recommend Crop) */
