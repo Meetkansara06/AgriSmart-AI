@@ -30,7 +30,7 @@ st.set_page_config(
 # Sidebar: UI Theme & Farm Parameters Configuration
 # ==============================================================================
 st.sidebar.markdown("## 🎨 App Theme")
-theme_choice = st.sidebar.radio("Select Interface Theme", ["☀️ Light Theme", "🌙 Dark Theme"], index=0)
+theme_choice = st.sidebar.radio("Select Interface Theme", ["☀️ Light Theme", "🌙 Dark Theme"], index=0, horizontal=True)
 is_dark = "Dark" in theme_choice
 
 # Define Theme Colors
@@ -40,12 +40,12 @@ if is_dark:
     card_bg = "#1E293B"
     card_border = "#334155"
     text_primary = "#F8FAFC"
-    text_secondary = "#94A3B8"
-    input_bg = "#334155"
-    input_text = "#FFFFFF"
-    input_border = "#475569"
+    text_secondary = "#CBD5E1"
+    input_bg = "#1E293B"
+    input_text = "#F8FAFC"
+    input_border = "#64748B"
     uploader_bg = "#1E293B"
-    uploader_border = "#475569"
+    uploader_border = "#64748B"
     uploader_btn_bg = "#334155"
     alert_bg = "#064E3B"
     alert_text = "#ECFDF5"
@@ -77,10 +77,10 @@ else:
     card_bg = "#FFFFFF"
     card_border = "#E2E8F0"
     text_primary = "#1A202C"
-    text_secondary = "#718096"
+    text_secondary = "#4A5568"
     input_bg = "#FFFFFF"
     input_text = "#1A202C"
-    input_border = "#CBD5E1"
+    input_border = "#94A3B8"
     uploader_bg = "#F8FAFC"
     uploader_border = "#94A3B8"
     uploader_btn_bg = "#E2E8F0"
@@ -122,118 +122,304 @@ st.markdown(f"""
             color: {text_primary} !important;
         }}
 
+        /* Remove top rainbow decoration bar completely */
+        [data-testid="stDecoration"],
+        div[data-testid="stDecoration"],
+        div[class*="stDecoration"] {{
+            display: none !important;
+            height: 0px !important;
+            visibility: hidden !important;
+        }}
+
+        /* Force top header bar to be transparent in both Light and Dark themes */
+        header,
+        [data-testid="stHeader"],
+        div[data-testid="stHeader"],
+        header[data-testid="stHeader"],
+        [data-testid="stAppHeader"],
+        div[data-testid="stAppHeader"],
+        [class*="stAppHeader"],
+        .stAppHeader,
+        [class*="stAppToolbar"],
+        .stAppToolbar {{
+            background-color: transparent !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }}
+
+        header *,
+        [data-testid="stHeader"] *,
+        [class*="stAppHeader"] * {{
+            color: {text_primary} !important;
+        }}
+
+        /* Sidebar Container */
         [data-testid="stSidebar"] {{
             background-color: {sidebar_bg} !important;
         }}
 
-        /* Specific sidebar headers, labels, and text elements */
-        [data-testid="stSidebar"] h1,
+        /* Sidebar Section Headings with Accent Underlines */
         [data-testid="stSidebar"] h2,
         [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] h4,
-        [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] label,
-        [data-testid="stSidebar"] span:not([data-baseweb="select"] span),
-        [data-testid="stSidebar"] div[class*="stCaption"] {{
-            color: {text_primary} !important;
+        [data-testid="stSidebar"] .stMarkdown h2,
+        [data-testid="stSidebar"] .stMarkdown h3 {{
+            color: {header_color} !important;
+            -webkit-text-fill-color: {header_color} !important;
+            font-size: 1.15rem !important;
+            font-weight: 700 !important;
+            margin-top: 1.3rem !important;
+            margin-bottom: 0.8rem !important;
+            padding-bottom: 0.4rem !important;
+            border-bottom: 2.5px solid {header_color} !important;
+            letter-spacing: 0.3px !important;
         }}
 
-        /* Sidebar Input Fields - High Contrast Visibility in Both Themes */
-        [data-testid="stSidebar"] input {{
-            background-color: {input_bg} !important;
-            color: {input_text} !important;
-            -webkit-text-fill-color: {input_text} !important;
-            border: 1px solid {input_border} !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-        }}
-
-        [data-testid="stSidebar"] [data-baseweb="input"],
-        [data-testid="stSidebar"] [data-baseweb="input"] > div,
-        [data-testid="stSidebar"] [data-testid="stNumberInput"] div {{
-            background-color: {input_bg} !important;
-            color: {input_text} !important;
-            border-color: {input_border} !important;
-            border-radius: 8px !important;
-        }}
-
-        [data-testid="stSidebar"] [data-baseweb="select"],
-        [data-testid="stSidebar"] [data-baseweb="select"] > div,
-        [data-testid="stSidebar"] [data-baseweb="select"] div[role="button"] {{
-            background-color: {input_bg} !important;
-            color: {input_text} !important;
-            -webkit-text-fill-color: {input_text} !important;
-            border-color: {input_border} !important;
-            border-radius: 8px !important;
-        }}
-
-        [data-testid="stSidebar"] [data-baseweb="select"] span {{
-            color: {input_text} !important;
-            -webkit-text-fill-color: {input_text} !important;
-            font-weight: 600 !important;
-        }}
-
-        [data-testid="stSidebar"] [data-baseweb="select"] svg {{
-            fill: {input_text} !important;
-        }}
-
-        /* Number Input Buttons (+/-) */
-        [data-testid="stSidebar"] button[data-testid="stNumberInputStepDown"],
-        [data-testid="stSidebar"] button[data-testid="stNumberInputStepUp"] {{
-            background-color: {input_bg} !important;
-            color: {input_text} !important;
-            border-color: {input_border} !important;
-        }}
-
-        [data-testid="stSidebar"] button[data-testid="stNumberInputStepDown"] svg,
-        [data-testid="stSidebar"] button[data-testid="stNumberInputStepUp"] svg {{
-            fill: {input_text} !important;
-            color: {input_text} !important;
-        }}
-
-        /* File Uploader Container & Dropzone High-Contrast Styling */
-        [data-testid="stFileUploaderDropzone"] {{
-            background-color: {uploader_bg} !important;
-            border: 2px dashed {uploader_border} !important;
+        /* Segmented Horizontal Pill Toggle for Theme Switcher */
+        [data-testid="stSidebar"] div[data-testid="stRadio"] div[role="radiogroup"] {{
+            display: flex !important;
+            flex-direction: row !important;
+            background-color: {card_bg} !important;
+            border: 1.5px solid {input_border} !important;
             border-radius: 12px !important;
+            padding: 4px !important;
+            gap: 6px !important;
         }}
 
-        [data-testid="stFileUploaderDropzone"] * {{
+        [data-testid="stSidebar"] div[data-testid="stRadio"] div[role="radiogroup"] label {{
+            flex: 1 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 8px !important;
+            padding: 6px 10px !important;
+            margin: 0 !important;
+            transition: all 0.2s ease-in-out !important;
+            cursor: pointer !important;
+            font-size: 0.88rem !important;
+            border: 1px solid transparent !important;
+            background: transparent !important;
+        }}
+
+        [data-testid="stSidebar"] div[data-testid="stRadio"] div[role="radiogroup"] label:hover {{
+            background-color: {card_border} !important;
+        }}
+
+        [data-testid="stSidebar"] div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {{
+            background-color: {header_color} !important;
+            color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+        }}
+
+        /* All Widget Labels (Main Page & Sidebar) — Clean plain text without any boxes or borders */
+        [data-testid="stWidgetLabel"],
+        [data-testid="stWidgetLabel"] *,
+        [data-testid="stWidgetLabel"] label,
+        [data-testid="stWidgetLabel"] div,
+        [data-testid="stWidgetLabel"] p,
+        [data-testid="stWidgetLabel"] span,
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] label *,
+        [data-testid="stSidebar"] p {{
             color: {text_primary} !important;
             -webkit-text-fill-color: {text_primary} !important;
+            font-weight: 600 !important;
+            opacity: 1 !important;
+            border: none !important;
+            border-radius: 0px !important;
+            background: transparent !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
         }}
 
-        [data-testid="stFileUploaderDropzone"] button {{
+        /* Tooltip Icons & Inner Label Elements */
+        [data-testid="stWidgetLabel"] svg,
+        [data-testid="stTooltipIcon"],
+        [data-testid="stTooltipIcon"] * {{
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }}
+
+        /* Single Unified Container for Inputs & Selectboxes with High-Contrast Border */
+        [data-baseweb="input"],
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="select"] div[role="button"],
+        [data-testid="stSidebar"] div[data-baseweb="select"] > div,
+        [data-testid="stSidebar"] div[data-baseweb="select"] div[role="button"],
+        [data-testid="stSidebar"] [data-baseweb="input"] {{
+            background-color: {input_bg} !important;
+            color: {input_text} !important;
+            -webkit-text-fill-color: {input_text} !important;
+            border: 1.5px solid {input_border} !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+        }}
+
+        /* Inner input field & sub-containers — seamless inside single container */
+        [data-baseweb="input"] *,
+        [data-baseweb="base-input"],
+        [data-baseweb="base-input"] * {{
+            border: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+        }}
+
+        [data-baseweb="input"] input,
+        [data-baseweb="base-input"] input,
+        input,
+        textarea {{
+            background-color: transparent !important;
+            color: {input_text} !important;
+            -webkit-text-fill-color: {input_text} !important;
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+            font-weight: 600 !important;
+            padding: 0.4rem 0.8rem !important;
+        }}
+
+        /* Number Input Step Buttons (+/-) — Integrated cleanly on right side */
+        button[data-testid="stNumberInputStepDown"],
+        button[data-testid="stNumberInputStepUp"] {{
+            background-color: {uploader_btn_bg} !important;
+            color: {input_text} !important;
+            -webkit-text-fill-color: {input_text} !important;
+            border: none !important;
+            border-left: 1px solid {input_border} !important;
+            border-radius: 0px !important;
+            box-shadow: none !important;
+        }}
+
+        button[data-testid="stNumberInputStepDown"] svg,
+        button[data-testid="stNumberInputStepUp"] svg {{
+            fill: {input_text} !important;
+            color: {input_text} !important;
+        }}
+
+        /* Main Page & Sidebar Selectboxes & Dropdowns */
+        div[data-baseweb="select"] {{
+            border: none !important;
+            background: transparent !important;
+        }}
+
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] div {{
+            color: {input_text} !important;
+            -webkit-text-fill-color: {input_text} !important;
+            font-weight: 600 !important;
+            border: none !important;
+        }}
+
+        div[data-baseweb="select"] svg {{
+            fill: {input_text} !important;
+        }}
+
+        /* Completely hide Streamlit default red tab-highlight line to prevent double underline */
+        div[data-baseweb="tab-highlight"],
+        [data-baseweb="tab-highlight"],
+        [data-testid="stTabHighlight"],
+        div[data-baseweb="tab-list"] > div:last-child {{
+            display: none !important;
+            background-color: transparent !important;
+            background: transparent !important;
+            height: 0px !important;
+            width: 0px !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }}
+
+        /* Navigation Tabs Styling — Single Clean Active & Hover Line */
+        [data-baseweb="tab-list"] {{
+            background-color: transparent !important;
+            border-bottom: 2px solid {card_border} !important;
+            gap: 4px !important;
+        }}
+
+        button[data-baseweb="tab"] {{
+            background-color: transparent !important;
+            color: {text_secondary} !important;
+            -webkit-text-fill-color: {text_secondary} !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            border: none !important;
+            border-bottom: 3px solid transparent !important;
+            padding: 0.6rem 1rem !important;
+            box-shadow: none !important;
+            outline: none !important;
+            transition: all 0.2s ease-in-out !important;
+        }}
+
+        button[data-baseweb="tab"]:hover {{
+            color: {header_color} !important;
+            -webkit-text-fill-color: {header_color} !important;
+            border-bottom: 3px solid {header_color} !important;
+            background-color: transparent !important;
+        }}
+
+        button[data-baseweb="tab"][aria-selected="true"] {{
+            color: {header_color} !important;
+            -webkit-text-fill-color: {header_color} !important;
+            font-weight: 700 !important;
+            border-bottom: 3px solid {header_color} !important;
+            background-color: transparent !important;
+        }}
+
+        /* Streamlit General Buttons (e.g. Clear Chat, Recommend Crop) */
+        .stButton > button,
+        button[kind="secondary"],
+        button[kind="primary"],
+        [data-testid="stForm"] button {{
             background-color: {uploader_btn_bg} !important;
             color: {text_primary} !important;
             -webkit-text-fill-color: {text_primary} !important;
-            border: 1px solid {uploader_border} !important;
+            border: 1px solid {card_border} !important;
             border-radius: 8px !important;
+            font-weight: 600 !important;
+            padding: 0.45rem 1.2rem !important;
         }}
 
-        /* Top Header Strip - Transparent Seamless Theme Integration */
-        header[data-testid="stHeader"],
-        [data-testid="stHeader"],
-        header {{
-            background-color: transparent !important;
-            background: transparent !important;
-        }}
-        header[data-testid="stHeader"] *,
-        [data-testid="stHeader"] * {{
+        /* Streamlit Chat Messages & Bubbles High-Contrast Styling */
+        [data-testid="stChatMessage"] {{
+            background-color: {card_bg} !important;
+            border: 1px solid {card_border} !important;
+            border-radius: 12px !important;
             color: {text_primary} !important;
+            padding: 1rem !important;
+            margin-bottom: 0.8rem !important;
         }}
 
-        /* Alert / st.info Box High-Contrast Styling */
-        [data-testid="stAlert"], div[class*="stAlert"] {{
-            background-color: {alert_bg} !important;
-            color: {alert_text} !important;
-            border: 1px solid {alert_border} !important;
+        [data-testid="stChatMessage"] *,
+        [data-testid="stChatMessage"] p,
+        [data-testid="stChatMessage"] div,
+        [data-testid="stChatMessage"] span,
+        [data-testid="stChatMessage"] li,
+        [data-testid="stChatMessage"] td,
+        [data-testid="stChatMessage"] th {{
+            color: {text_primary} !important;
+            -webkit-text-fill-color: {text_primary} !important;
+        }}
+
+        /* Chat Input Field Styling */
+        [data-testid="stChatInput"],
+        [data-testid="stChatInput"] > div {{
+            background-color: {input_bg} !important;
+            border: 1px solid {input_border} !important;
             border-radius: 12px !important;
         }}
 
-        [data-testid="stAlert"] *, div[class*="stAlert"] * {{
-            color: {alert_text} !important;
-            -webkit-text-fill-color: {alert_text} !important;
+        [data-testid="stChatInput"] textarea {{
+            color: {input_text} !important;
+            -webkit-text-fill-color: {input_text} !important;
+        }}
+
+        [data-testid="stChatInput"] button {{
+            color: {header_color} !important;
+            fill: {header_color} !important;
         }}
 
         /* Hero Header */
@@ -384,14 +570,59 @@ st.markdown(f"""
             margin-top: 2px;
         }}
 
-        /* Navigation Tabs Styling */
-        button[data-baseweb="tab"] {{
+        /* Navigation Tabs Styling - High Visibility */
+        button[data-baseweb="tab"],
+        [data-baseweb="tab-list"] button,
+        button[data-baseweb="tab"] div,
+        button[data-baseweb="tab"] p,
+        button[data-baseweb="tab"] span {{
             color: {text_secondary} !important;
-            font-weight: 500;
+            font-weight: 600 !important;
         }}
-        button[aria-selected="true"] {{
+        button[aria-selected="true"],
+        button[aria-selected="true"] div,
+        button[aria-selected="true"] p,
+        button[aria-selected="true"] span {{
             color: {header_color} !important;
             font-weight: 700 !important;
+        }}
+
+        /* File Uploader Container & Dropzone High-Contrast Styling */
+        [data-testid="stFileUploader"],
+        [data-testid="stFileUploaderDropzone"],
+        section[data-testid="stFileUploaderDropzone"],
+        div[data-testid="stFileUploaderDropzone"] {{
+            background-color: {uploader_bg} !important;
+            border: 2px dashed {uploader_border} !important;
+            border-radius: 12px !important;
+        }}
+
+        [data-testid="stFileUploaderDropzone"] *,
+        section[data-testid="stFileUploaderDropzone"] * {{
+            color: {text_primary} !important;
+            -webkit-text-fill-color: {text_primary} !important;
+        }}
+
+        [data-testid="stFileUploaderDropzone"] button,
+        section[data-testid="stFileUploaderDropzone"] button {{
+            background-color: {uploader_btn_bg} !important;
+            color: {text_primary} !important;
+            -webkit-text-fill-color: {text_primary} !important;
+            border: 1px solid {uploader_border} !important;
+            border-radius: 8px !important;
+        }}
+
+        /* Alert / st.info Box High-Contrast Styling */
+        [data-testid="stAlert"], div[class*="stAlert"] {{
+            background-color: {alert_bg} !important;
+            color: {alert_text} !important;
+            border: 1px solid {alert_border} !important;
+            border-radius: 12px !important;
+        }}
+
+        [data-testid="stAlert"] *, div[class*="stAlert"] * {{
+            color: {alert_text} !important;
+            -webkit-text-fill-color: {alert_text} !important;
         }}
 
         #MainMenu {{visibility: hidden;}}

@@ -217,16 +217,15 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-<<<<<<< HEAD
 # Local / personal files — do not push to shared repo
 docs/
 report/Problem - 1.pdf
 src/crop_recommendation.py
-=======
+
 # Trained model artefacts
 *.pkl
 !model/crop_rec_model.pkl
 
 # Large CSV datasets (training data — do not commit)
 *.csv
->>>>>>> 17ad2162 (Add crop recommendation model)
+
