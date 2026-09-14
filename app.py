@@ -401,15 +401,11 @@ st.markdown(f"""
             -webkit-text-fill-color: {header_color} !important;
         }}
 
-        /* Completely hide Streamlit default red tab-highlight line across versions */
+        /* Hide ONLY the moving red tab highlight bar without hiding tab scroll buttons */
         [data-baseweb="tab-highlight"],
         div[data-baseweb="tab-highlight"],
-        [data-testid="stTabHighlight"],
-        div[data-baseweb="tab-list"] > div:last-child,
-        [role="tablist"] > div:last-child {{
+        [data-testid="stTabHighlight"] {{
             display: none !important;
-            background-color: transparent !important;
-            background: transparent !important;
             height: 0px !important;
             width: 0px !important;
             opacity: 0 !important;
@@ -423,7 +419,9 @@ st.markdown(f"""
             background-color: transparent !important;
             background: transparent !important;
             border-bottom: 2px solid {card_border} !important;
-            gap: 4px !important;
+            gap: 2px !important;
+            overflow-x: auto !important;
+            scrollbar-width: none !important;
         }}
 
         [data-baseweb="tab"],
@@ -436,9 +434,10 @@ st.markdown(f"""
             background: transparent !important;
             border: none !important;
             border-bottom: 3px solid transparent !important;
-            padding: 0.6rem 1rem !important;
+            padding: 0.5rem 0.75rem !important;
             box-shadow: none !important;
             outline: none !important;
+            white-space: nowrap !important;
             transition: all 0.2s ease-in-out !important;
         }}
 
@@ -456,7 +455,7 @@ st.markdown(f"""
             color: {text_secondary} !important;
             -webkit-text-fill-color: {text_secondary} !important;
             font-weight: 600 !important;
-            font-size: 0.95rem !important;
+            font-size: 0.9rem !important;
             opacity: 1 !important;
         }}
 
@@ -490,19 +489,25 @@ st.markdown(f"""
             opacity: 1 !important;
         }}
 
-        /* Tab Scroll Arrows, Overflow Controls & Edge Dividers */
-        div[data-baseweb="tab-border"],
-        div[data-baseweb="tab-scroll-right"],
-        div[data-baseweb="tab-scroll-left"],
-        button[data-baseweb="tab-scroll-button"],
+        /* Tab Scroll Arrows & Controls (< and >) — Always functional and crisp */
         [data-baseweb="tab-list"] button,
         div[data-baseweb="tab-list"] button[aria-label],
-        div[role="tablist"] button {{
-            background-color: transparent !important;
-            background: transparent !important;
+        div[role="tablist"] button,
+        div[data-baseweb="tab-scroll-right"],
+        div[data-baseweb="tab-scroll-left"] {{
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-color: {card_bg} !important;
+            background: {card_bg} !important;
             color: {text_primary} !important;
-            border: none !important;
-            box-shadow: none !important;
+            border: 1px solid {card_border} !important;
+            border-radius: 6px !important;
+            padding: 4px 8px !important;
+            margin: 0 2px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            cursor: pointer !important;
         }}
 
         div[data-baseweb="tab-border"] *,
