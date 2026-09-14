@@ -12,6 +12,7 @@ from src.precautions import get_precautions
 from src.weather import get_weather
 from src.irrigation import irrigation_advice
 from src.sustainability import sustainability_score
+from src.farmer_assistant import FarmerAssistantError, get_farmer_response
 
 # ==============================================================================
 # Page Configuration
@@ -444,16 +445,27 @@ st.markdown("""
 # ==============================================================================
 # Navigation Tabs for Main Sections
 # ==============================================================================
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🔬 1. Disease Detection",
     "🌤️ 2. Weather & Irrigation",
     "📊 3. Sustainability Score",
-    "🌾 4. Crop Recommendation"
+    "🌾 4. Crop Recommendation",
+    "🤖 5. Farmer Assistant"
 ])
 
 # Initialize Session State for Disease Detection status
 if "disease_detected" not in st.session_state:
     st.session_state["disease_detected"] = False
+if "agrismart_context" not in st.session_state:
+    st.session_state["agrismart_context"] = {
+        "disease": "Unavailable",
+        "weather": "Unavailable",
+        "irrigation": "Unavailable",
+        "crop_recommendation": "Unavailable",
+        "sustainability": "Unavailable",
+    }
+if "farmer_messages" not in st.session_state:
+    st.session_state["farmer_messages"] = []
 
 # ==============================================================================
 # Section 1: Disease Detection & Precautions
@@ -487,6 +499,14 @@ with tab1:
                 with st.spinner("🔬 Running AgriSmart AI Neural Network Inference..."):
                     raw_label, confidence = predict_with_confidence(temp_path)
                     precaution_info = get_precautions(raw_label)
+
+                st.session_state["agrismart_context"]["disease"] = {
+                    "crop": precaution_info["crop"],
+                    "disease": precaution_info["disease"],
+                    "model_label": raw_label,
+                    "confidence": round(confidence * 100, 2),
+                    "precautions": precaution_info["precautions"],
+                }
 
                 is_healthy = precaution_info["status"] == "Healthy"
                 st.session_state["disease_detected"] = not is_healthy
@@ -576,6 +596,12 @@ with tab2:
         st.markdown('<div class="section-header">💧 Irrigation Decision</div>', unsafe_allow_html=True)
 
         advice = irrigation_advice(rain_tomorrow, crop_stage, soil_type)
+        st.session_state["agrismart_context"]["weather"] = {
+            "rain_tomorrow_mm": rain_tomorrow,
+            "max_temperature_c": max_t,
+            "min_temperature_c": min_t,
+        }
+        st.session_state["agrismart_context"]["irrigation"] = advice
         
         # Color coding advice based on rain/action
         is_delay_or_skip = "Delay" in advice or "Skip" in advice
@@ -594,6 +620,8 @@ with tab2:
         )
 
     except Exception as e:
+        st.session_state["agrismart_context"]["weather"] = "Unavailable"
+        st.session_state["agrismart_context"]["irrigation"] = "Unavailable"
         st.error(f"⚠️ Could not retrieve live weather forecast: {str(e)}")
 
 # ==============================================================================
@@ -610,6 +638,7 @@ with tab3:
         disease_detected=st.session_state["disease_detected"],
         fertilizer_level=fertilizer_level
     )
+    st.session_state["agrismart_context"]["sustainability"] = sust_result
 
     col_s1, col_s2 = st.columns([1, 1.2])
 
@@ -682,7 +711,64 @@ with tab4:
                 ph=crop_ph,
                 rainfall=crop_rainfall,
             )
+            st.session_state["agrismart_context"]["crop_recommendation"] = {
+                "recommended_crop": recommended_crop,
+                "inputs": {
+                    "N": crop_n,
+                    "P": crop_p,
+                    "K": crop_k,
+                    "temperature": crop_temperature,
+                    "humidity": crop_humidity,
+                    "ph": crop_ph,
+                    "rainfall": crop_rainfall,
+                },
+            }
             st.success(f"Recommended crop: {recommended_crop.title()}")
             st.caption("This recommendation uses the trained Random Forest model and the seven entered measurements.")
         except (FileNotFoundError, ValueError, TypeError) as error:
+            st.session_state["agrismart_context"]["crop_recommendation"] = "Unavailable"
             st.error(f"Crop recommendation unavailable: {error}")
+
+# ==============================================================================\
+# Section 5: Farmer Assistant\
+# ==============================================================================\
+with tab5:
+    st.markdown('<div class="section-header">🤖 Farmer Assistant</div>', unsafe_allow_html=True)
+    st.write("Ask questions about the recommendations currently produced by AgriSmart AI.")
+
+    language = st.selectbox("Assistant language", ["English", "Gujarati"], key="farmer_language")
+    if st.button("Clear Chat", key="clear_farmer_chat"):
+        st.session_state["farmer_messages"] = []
+
+    for message in st.session_state["farmer_messages"]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    question = st.chat_input("Ask about your AgriSmart results...")
+    if question:
+        st.session_state["farmer_messages"].append({"role": "user", "content": question})
+        with st.chat_message("user"):
+            st.markdown(question)
+
+        api_key = os.getenv("GEMINI_API_KEY")
+        try:
+            api_key = st.secrets.get("GEMINI_API_KEY", api_key)
+        except Exception:
+            pass
+
+        try:
+            answer = get_farmer_response(
+                question=question,
+                agrismart_context=st.session_state["agrismart_context"],
+                language=language,
+                api_key=api_key,
+                conversation_history=st.session_state["farmer_messages"][:-1],
+            )
+        except (FarmerAssistantError, ValueError) as error:
+            answer = str(error)
+        except Exception:
+            answer = "The Farmer Assistant is temporarily unavailable. Please try again later."
+
+        st.session_state["farmer_messages"].append({"role": "assistant", "content": answer})
+        with st.chat_message("assistant"):
+            st.markdown(answer)

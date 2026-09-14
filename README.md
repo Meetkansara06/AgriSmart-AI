@@ -62,6 +62,49 @@ Unified web interface wiring all modules into one farmer-facing product:
 - Smart irrigation recommendation
 - Sustainability score with eco-badge
 - Crop recommendation from soil/climate inputs
+- Farmer Assistant for grounded English or Gujarati explanations
+
+## Bonus E — Farmer Assistant GenAI
+
+The Farmer Assistant is a conversational explanation layer above the existing
+AgriSmart modules. It receives the actual disease, precaution, weather,
+irrigation, sustainability, and crop-recommendation results available in the
+current Streamlit session and sends them as grounded context to the Google
+Gemini API. It explains those results but does not
+diagnose disease or override any module recommendation.
+
+Supported languages are English and Gujarati. Text chat history is retained
+only for the current Streamlit session; no conversation database is used.
+Voice support is not implemented. An API key is required because this feature
+is not offline. Configure it using either the environment variable
+`GEMINI_API_KEY` or `.streamlit/secrets.toml`:
+
+```toml
+GEMINI_API_KEY = "your-key-here"
+```
+
+The default model is `gemini-3.5-flash-lite`. Set `GEMINI_MODEL` to select another
+Gemini model. The official `google-genai` package is installed from
+`requirements.txt`. Never commit API keys or the secrets file. If no key is
+configured, the dashboard continues to work and the Farmer Assistant displays
+a configuration message.
+
+Example questions include:
+
+- `What disease does my plant have?`
+- `What should I do today?`
+- `Why should I delay irrigation?`
+- `આજે પાણી આપવું જોઈએ?`
+
+Run the automated, network-free tests with:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+To make a manual real-API test, configure `GEMINI_API_KEY` first and
+send a question from the Farmer Assistant tab. Real API responses are not
+tested automatically and the key must never be placed in source code.
 
 ---
 
