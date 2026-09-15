@@ -1,157 +1,69 @@
 # AgriSmart AI — Model Report
 
-**Team:** L.J. Institute of Engineering & Technology [C-433]  
-**Hackathon:** SIH 2026 (Internal)
+**Team:** C-433, L.J. Institute of Engineering & Technology · **Hackathon:** SIH 2026 (Internal) · **Date:** September 2026
 
----
+## 1. Task
 
-## Problem Statement
+Classify crop leaf images into 18 disease/healthy classes across 6 crops (Apple, Corn, Grape, Pepper Bell, Potato, Tomato). The system accepts a single leaf photograph and returns a predicted class label with confidence score. This is a closed-set classifier — it has no "unknown" output class.
 
-Detect crop leaf diseases from images and provide actionable farming advice. The system must classify leaf images into disease categories with high accuracy and deliver farmer-friendly precautions, irrigation guidance, sustainability scoring, and crop recommendations.
+## 2. Dataset & Split
 
----
-
-## Models Used
-
-### 1. Disease Detection — MobileNetV2 (Transfer Learning)
-
-| Property | Detail |
+| Property | Value |
 |---|---|
-| Base Model | MobileNetV2 (pre-trained on ImageNet) |
-| Framework | TensorFlow 2.21.0 + Keras |
-| Input Size | 224 × 224 × 3 (RGB) |
-| Output | 18 classes (softmax) |
-| Total Parameters | ~2.3M (MobileNetV2) + 18 dense |
-| Training Data | PlantVillage (~19,600 images, 70/15/15 split) |
+| Dataset | PlantVillage (~54,000 images, filtered to 18 classes) |
+| Split | 70% train / 15% validation / 15% test |
+| Seed | 42 (`split-folders` v0.6.1) |
+| Image size | 224 × 224 × 3 |
+| Dev test set | 2,950 images |
 
-**Architecture:**
+> ⚠️ The official SIH evaluation uses a **separate organizer-held-out field-condition test set** (PlantDoc-style real-world images). That dataset is **not** in this repository and was **not** used for training or model selection. All metrics in this report are from the **internal PlantVillage development test split only**.
 
-```
-MobileNetV2 (ImageNet weights) → GlobalAveragePooling2D → Dense(18, softmax)
-```
+## 3. Model / Approach
 
-**Training Strategy:**
-
-| Phase | What | Optimizer | LR | Epochs |
-|---|---|---|---|---|
-| Phase 1 | Train dense head only (base frozen) | Adam | Default | 3 (early stop) |
-| Phase 2 | Fine-tune last 20 base layers + head | Adam | 1e-5 | 10 (early stop) |
-
-**Data Augmentation (training only):** Horizontal flip, rotation ±20°, zoom 20%, brightness [0.7–1.3], width/height shift 10%.
-
-**Preprocessing:** `mobilenet_v2.preprocess_input` — scales pixel values to [-1, 1].
-
-**Callbacks:** ModelCheckpoint (best `val_accuracy`) + EarlyStopping (patience=2, restores best weights).
-
-### 2. Crop Recommendation — Random Forest
-
-| Property | Detail |
+| Property | Value |
 |---|---|
-| Algorithm | RandomForestClassifier (scikit-learn) |
-| n_estimators | 100 |
-| random_state | 42 |
-| Features | N, P, K, temperature, humidity, ph, rainfall |
-| Output | 22 crop classes |
-| Training Data | Kaggle Crop Recommendation (2,200 rows, 80/20 stratified split) |
+| Architecture | MobileNetV2 (ImageNet pretrained) → GlobalAveragePooling2D → Dense(18, softmax) |
+| Framework | TensorFlow 2.21.0 |
+| Phase 1 | Train classification head only (backbone frozen), Adam, 3 epochs max |
+| Phase 2 | Fine-tune last 20 MobileNetV2 layers + head, Adam, LR=1e-5, 10 epochs max |
+| Augmentation | Train-only: flip, rotation ±20°, zoom 20%, brightness [0.7–1.3], shift 10% |
+| Checkpoint | Best validation accuracy → `model/best_model.keras` |
+| Early stopping | Patience = 2 on val accuracy, restores best weights |
+| Preprocessing | `mobilenet_v2.preprocess_input` (pixels → [-1, 1]) |
 
----
-
-## Results
-
-### Disease Detection (MobileNetV2)
-
-Evaluated on held-out PlantVillage test split (2,950 images, never seen during training).
+## 4. Results — PlantVillage Development Test (2,950 images)
 
 | Metric | Value |
 |---|---|
-| **Test Accuracy** | **97.63%** |
+| **Accuracy** | **97.63%** |
 | **Macro F1-Score** | **97.19%** |
 | Test Loss | 0.0707 |
 
-**Per-Class F1-Scores:**
+> These are **development-set results**. They must not be interpreted as the official SIH field-condition score. The official score is determined by the organizer using the separate held-out field test set.
 
-| Class | F1 | Support | | Class | F1 | Support |
-|---|---|---|---|---|---|---|
-| Apple — Apple Scab | 0.98 | 95 | | Pepper Bell — Healthy | 0.99 | 223 |
-| Apple — Black Rot | 0.99 | 94 | | Potato — Early Blight | 0.99 | 150 |
-| Apple — Healthy | 0.99 | 248 | | Potato — Late Blight | 0.96 | 150 |
-| Corn — Gray Leaf Spot | 0.99 | 78 | | Potato — Healthy | 0.90 | 24 |
-| Corn — Common Rust | 0.99 | 180 | | Tomato — Bacterial Spot | 0.99 | 320 |
-| Corn — Healthy | 1.00 | 175 | | Tomato — Early Blight | 0.90 | 150 |
-| Grape — Black Rot | 1.00 | 177 | | Tomato — Late Blight | 0.95 | 287 |
-| Grape — Healthy | 0.97 | 64 | | Tomato — Leaf Mold | 0.94 | 144 |
-| Pepper Bell — Bacterial Spot | 0.98 | 151 | | Tomato — Healthy | 0.99 | 240 |
+## 5. Per-Class Precision & Recall
 
-**Weakest classes:** Potato Healthy (F1=0.90, only 24 test samples), Tomato Early Blight (F1=0.90).
+| Class | P | R | Class | P | R |
+|---|---|---|---|---|---|
+| Apple — Scab | 0.99 | 0.97 | Pepper Bell — Healthy | 0.98 | 1.00 |
+| Apple — Black Rot | 0.99 | 1.00 | Potato — Early Blight | 0.98 | 1.00 |
+| Apple — Healthy | 0.99 | 0.99 | Potato — Late Blight | 0.99 | 0.93 |
+| Corn — Gray Leaf Spot | 1.00 | 0.97 | Potato — Healthy | 0.85 | 0.96 |
+| Corn — Common Rust | 0.99 | 1.00 | Tomato — Bacterial Spot | 0.99 | 0.98 |
+| Corn — Healthy | 1.00 | 1.00 | Tomato — Early Blight | 0.94 | 0.87 |
+| Grape — Black Rot | 1.00 | 1.00 | Tomato — Late Blight | 0.96 | 0.94 |
+| Grape — Healthy | 1.00 | 0.94 | Tomato — Leaf Mold | 0.89 | 0.99 |
+| Pepper Bell — Bact. Spot | 0.97 | 0.99 | Tomato — Healthy | 0.98 | 1.00 |
 
-### Crop Recommendation (Random Forest)
+Full report: `report/classification_report.txt` · Confusion matrix: `report/confusion_matrix.png`
 
-| Metric | Value |
-|---|---|
-| **Test Accuracy** | **99.55%** |
-| **Macro F1-Score** | **0.9955** |
-| Classes | 22 crops |
+## 6. Baseline Comparison
 
----
+No explicit baseline Macro-F1 was provided in the official SIH Problem Statement materials available in this repository. Our PlantVillage development-test Macro-F1 is **0.9719**. Official field-test comparison is pending because the organizer-held-out field-condition score is not yet available.
 
-## Bonus Module Formulas
+## 7. Limitations
 
-### Sustainability Score (0–100)
-
-```
-score = (water_score × 0.40) + (health_score × 0.40) + (resource_score × 0.20)
-
-water_score    = max(0, 1 − water_used / max_water) × 100
-health_score   = 0 if disease_detected else 100
-resource_score = 100 − fertilizer_level
-```
-
-| Badge | Threshold |
-|---|---|
-| Platinum | score > 85 |
-| Green Guardian | score > 70 |
-| Needs Improvement | score 50–70 |
-| At Risk | score < 50 |
-
-### Irrigation Rules (priority order)
-
-| Condition | Decision |
-|---|---|
-| rain > 10 mm | Delay irrigation |
-| rain > 4 mm + sandy soil | Light irrigation |
-| rain > 4 mm + other soil | Skip irrigation |
-| rain ≤ 4 mm + seedling | Irrigate gently |
-| rain ≤ 4 mm + other stage | Irrigate today |
-
-### Weather Intelligence
-
-- **Source:** Open-Meteo API (free, no API key)
-- **Data:** Tomorrow's precipitation (mm), max/min temperature (°C)
-- **Feeds into:** Irrigation decision module
-
----
-
-## Limitations
-
-| Limitation | Impact |
-|---|---|
-| PlantVillage is studio-quality | Field-condition images may yield lower accuracy |
-| 18-class scope only | Apple, Corn, Grape, Pepper, Potato, Tomato — no other crops |
-| Small Potato Healthy support (24) | Lowest F1 score in the model |
-| CPU-only on Windows | TensorFlow GPU not supported natively; inference takes ~8s |
-| Weather module needs internet | Offline mode not available for irrigation advice |
-
----
-
-## Reproducibility
-
-```powershell
-git clone <repo_url>
-cd AgriSmart-AI
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-.\.venv\Scripts\python.exe model\predict.py --image "path\to\leaf.jpg"
-```
-
-Expected: disease class + confidence printed in < 10 seconds after model load.
+- **Lab vs. field gap:** PlantVillage images are studio-quality; real field photos (soil, glare, shadows) may produce lower accuracy.
+- **Closed-set 18 classes:** The model cannot reject unknown crops/diseases — out-of-scope images still receive a high-confidence existing-class prediction due to `softmax`.
+- **Limited crop coverage:** Only Apple, Corn, Grape, Pepper Bell, Potato, and Tomato are supported. Major Indian staples (Rice, Wheat, Cotton) are not.
+- **Development metrics only:** The reported 97.19% Macro-F1 is from the PlantVillage development split. The official SIH field-condition test set was not used for training, validation, or model selection, and its score is not available in this repository.
