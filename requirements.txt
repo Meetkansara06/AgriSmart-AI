@@ -14,3 +14,4 @@ scipy<1.14
 tf_keras<2.17
 protobuf==7.36.1
 h5py
+pytest>=8.0
