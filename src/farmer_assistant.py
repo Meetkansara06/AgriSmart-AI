@@ -8,7 +8,7 @@ to diagnose disease, recalculate recommendations, or invent missing data.
 Configure the API key with ``GEMINI_API_KEY`` or pass it explicitly to
 ``get_farmer_response``. The model can be configured with ``GEMINI_MODEL``.
 """
-
+import re
 import json
 import os
 import sys
@@ -63,6 +63,7 @@ preferably as 3-6 concise bullet points. Do not stop after an introduction.
 Do not claim to be a substitute for local agricultural expertise.
 
 Gujarati language guidelines:
+- For scores, always use the natural Gujarati order "૧૦૦ માંથી X", for example "તમારો સસ્ટેનેબિલિટી સ્કોર ૧૦૦ માંથી ૭૪ છે" and "પાણીના વપરાશનો સ્કોર ૧૦૦ માંથી ૫૦ છે".
 - Write in natural, conversational Gujarati as spoken in villages.
 - Do not mechanically translate English technical terms word-for-word.
   Instead, use the simplest Gujarati explanation, placing the English
@@ -224,7 +225,12 @@ def _get_api_key(api_key: str | None) -> str | None:
 def _clean_response(response_text: Any) -> str:
     if not isinstance(response_text, str) or not response_text.strip():
         raise FarmerAssistantError("The language model returned an empty response.")
-    return response_text.strip()
+
+    # Remove accidental special-token artifacts from model output.
+    cleaned = re.sub(r"<bos>\s*2?", "", response_text, flags=re.IGNORECASE)
+    cleaned = re.sub(r"<eos>", "", cleaned, flags=re.IGNORECASE)
+
+    return cleaned.strip()
 
 
 def _extract_response_text(response: Any) -> str:
