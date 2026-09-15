@@ -217,7 +217,7 @@ python -m pytest tests/ -v          # 27 tests, all mocked, no API key needed
 
 ## Demo Video
 
-> 🎬 **Demo link:** *[ADD FINAL DEMO LINK HERE]*
+> 🎬 **Demo link:** *https://youtu.be/SBaPivS09_Q*
 
 **Flow:** App overview → diseased leaf → healthy leaf → weather + irrigation → sustainability → crop recommendation → Farmer Assistant (EN + GU) → closing
 
