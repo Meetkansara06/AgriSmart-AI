@@ -2,7 +2,7 @@
 
 AI-powered crop disease detection and smart farming advisory system.
 
-**Team:** L.J. Institute of Engineering & Technology — C-433  
+**Team:** Digital Dynamos  
 **Hackathon:** Smart India Hackathon (SIH) 2026 — Internal Round
 
 Farmers need accessible crop disease identification and actionable guidance. AgriSmart AI combines MobileNetV2-based computer vision with weather intelligence, smart irrigation, sustainability scoring, crop recommendation, and a grounded multilingual Farmer Assistant — all in a single Streamlit application.
@@ -183,7 +183,9 @@ AgriSmart-AI/
 │   ├── irrigation.py              # Rule-based irrigation
 │   ├── sustainability.py          # Sustainability scorer
 │   └── farmer_assistant.py        # Gemini assistant
-├── data/split/                    # train / val / test
+├── data/
+|   ├── split/                     # train / val / test
+|   ├── crop_recommendation        # Crop_recommendation.csv                     
 ├── report/                        # Metrics, reports, confusion matrix
 ├── tests/                         # 27 automated tests
 └── .streamlit/secrets.toml        # API keys (git-ignored)
@@ -227,4 +229,4 @@ AgriSmart AI is **decision support**. It does not replace professional agricultu
 
 ---
 
-*Made with 💚 for sustainable agriculture — SIH 2026*
+*Made with 💚 for sustainable agriculture — SIH 2026 - Internal Round*
